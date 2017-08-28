@@ -14,9 +14,6 @@ class AddCountries extends React.Component {
     return (
       <div style={{'text-align':'center'}}>
         <AutoComplete/>
-        <FloatingActionButton>
-          <SendIcon/>
-        </FloatingActionButton>
       </div>
     );
   }
