@@ -1,6 +1,6 @@
 var request = require('request');
-rosh_hanikra = [33.094099, 35.103982]
-gaza = [31.323499, 34.218753]
+var rosh_hanikra = [33.094099, 35.103982];
+var gaza = [31.323499, 34.218753];
 
 function add_d_nmiles_to_lat(d, lat) {
     // 1 lat_degree = 110.574 km = 59.70518359 nm
@@ -14,12 +14,12 @@ function add_d_nmiles_to_lon(d, lat, lon) {
 
 function calculate_square_str(distance){
     left = add_d_nmiles_to_lat(-distance, gaza[0])
-    top = add_d_nmiles_to_lon(distance, left, rosh_hanikra[1])
+    bottom = add_d_nmiles_to_lon(-distance, left, gaza[1])
 
     right = add_d_nmiles_to_lat(distance, rosh_hanikra[0])
-    bottom = add_d_nmiles_to_lon(-distance, right, gaza[1])
+    top = add_d_nmiles_to_lon(distance, right, rosh_hanikra[1])
 
-    return left + '%2C' + top + '%2C' + right + '%2C' + bottom;
+    return bottom + '%2C' + left + '%2C' + top + '%2C' + right;
 }
 
 function vf_init(){
@@ -31,11 +31,11 @@ function vf_init(){
             }
         },
         function (error, response, body) {
-            if (!error && response.statusCode == 200) {
+            if (!error && response != null && response.statusCode == 200) {
                 // console.log('VesselFinder: Initializing... Done!');
                 // console.log(body);
             } else {
-                console.error('VesselFinder: Initializing... Error ' + response.statusCode);
+                console.error('VesselFinder: Initializing... Error ');
                 console.error(error);
             }
         }
@@ -43,7 +43,7 @@ function vf_init(){
 }
 
 function vf_get_all_ships(distance, callback){
-    console.log('Finding ships in '+calculate_square_str(distance));
+    console.log('Finding ships in '+calculate_square_str(distance).replace(/%2C/gi, " "));
     request.get(
         'https://www.vesselfinder.com/vesselsonmap?bbox='+ calculate_square_str(distance) +'&zoom=7&pv=6',
         {
@@ -53,7 +53,7 @@ function vf_get_all_ships(distance, callback){
             }
         },
         function (error, response, body) {
-            if (!error && response.statusCode == 200) {
+            if (!error && response != null && response.statusCode == 200) {
                 var mmsi_array = [];
                 var rows = body.split(/\n/);
                 for (var i=1; i<rows.length; i++) {
@@ -67,7 +67,7 @@ function vf_get_all_ships(distance, callback){
                 // console.log(col.join(', '));
                 callback(mmsi_array);
             } else {
-                console.error('VesselFinder: GetAllShips... Error ' + response.statusCode);
+                console.error('VesselFinder: GetAllShips... Error ');
                 console.error(error);
             }
         }
@@ -85,21 +85,43 @@ function vf_find_ship(mmsi, callback){
             }
         },
         function (error, response, body) {
-            if (!error && response.statusCode == 200) {
+            if (!error && response != null && response.statusCode == 200) {
                 // console.log(body);
                 callback(body);
             } else {
-                console.error('VesselFinder: GetAllShips... Error ' + response.statusCode);
+                console.error('VesselFinder: GetAllShips... Error ');
                 console.error(error);
             }
         }
     );
 }
 
-vf_init();
-vf_get_all_ships(0, function(mmsi_array){
-    if (mmsi_array.length > 0) {
-        // console.log('MMSI = ' + mmsi_array[0])
-        vf_find_ship(mmsi_array[0], console.log);
-    }
-});
+function wait(ms){
+   var start = new Date().getTime();
+   var end = start;
+   while(end < start + ms) {
+     end = new Date().getTime();
+  }
+}
+
+/*
+ The callback is performed on every IMO separately!
+*/
+function vf_get_all_imos_by_distance(distance, callback){
+    vf_init();
+    vf_get_all_ships(distance, function(mmsi_array){
+        for (var i=0; i<mmsi_array.length; i++){
+            vf_find_ship(mmsi_array[i], function(vessel) {
+                var obj = JSON.parse(vessel);
+                if (obj.imo == null || obj.imo == '') {
+                    // vessel doesn't have imo
+                } else {
+                    // vessel has imo, do something
+                    callback(obj.imo)
+                }
+            });
+        }
+    });
+}
+
+vf_get_all_imos_by_distance(0, console.log)
