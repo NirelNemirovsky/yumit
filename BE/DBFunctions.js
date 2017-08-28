@@ -87,56 +87,58 @@ courseSchema.pre('save', function(next) {
   next();
 });
 
-//connect to the db
-function Connect() {
-  mongoose.connect(uri);
-}
+module.exports = {
+    //connect to the db
+    function Connect() {
+      mongoose.connect(uri);
+    }
 
-//close connection
-function close() {
-  mongoose.close();
-}
+    //close connection
+    function close() {
+      mongoose.close();
+    }
 
-//get ship by IMO
-function getShip(IMO) {
-  shipModel.findOne( { IMO: IMO } );
-}
+    //get ship by IMO
+    function getShip(IMO) {
+      shipModel.findOne( { IMO: IMO } );
+    }
 
-//get course by shipIMO
-function getCourses(shipIMO) {
-  courseModel.all( { shipIMO: shipIMO } );
-}
+    //get course by shipIMO
+    function getCourses(shipIMO) {
+      courseModel.all( { shipIMO: shipIMO } );
+    }
 
-// save the ship
-function insert(ship) {
-  var shipObj = JSON.parse(ship);
-  var ship = new shipModel({ IMO : shipObj.imo, name : shipObj.name, type : shipObj.type,
-    year : shipObj.year, sizes : shipObj.sizes, gt : shipObj.gt, country : shipObj.country});
-  ship.save(function(err) {
-    if (err) throw err;
-  });
-  var course = new courseModel( { shipIMO : shipObj.imo, dest : shipObj.dest,
-    timestamp :shipObj.timestamp, etastamp : shipObj.etastamp, ship_course : shipObj.ship_course,
-    ship_speed : shipObj.ship_speed });
-    course.save(function(err) {
+    // save the ship
+    function insert(ship) {
+      var shipObj = JSON.parse(ship);
+      var ship = new shipModel({ IMO : shipObj.imo, name : shipObj.name, type : shipObj.type,
+        year : shipObj.year, sizes : shipObj.sizes, gt : shipObj.gt, country : shipObj.country});
+      ship.save(function(err) {
+        if (err) throw err;
+      });
+      var course = new courseModel( { shipIMO : shipObj.imo, dest : shipObj.dest,
+        timestamp :shipObj.timestamp, etastamp : shipObj.etastamp, ship_course : shipObj.ship_course,
+        ship_speed : shipObj.ship_speed });
+        course.save(function(err) {
+          if (err) throw err;
+        });
+    };
+
+    function coursesBetween(IMO, date1, date2) {
+      Ship.find({ IMO: IMO }).find(createdAt: {
+        $gte: date1,
+        $lt: date2
+      }).exec(function(err, users) {
+        if (err) throw err;
+      });
+    }
+
+    ship.findOneAndRemove({ IMO: IMO }, function(err) {
       if (err) throw err;
+      course.findAndRemove({ shipIMO: shipIMO }, function(err) {
+        if (err) throw err;
+      });
+      // we have deleted the ship
+      console.log('Ship deleted!');
     });
 };
-
-function coursesBetween(IMO, date1, date2) {
-  Ship.find({ IMO: IMO }).find(createdAt: {
-    $gte: date1,
-    $lt: date2
-  }).exec(function(err, users) {
-    if (err) throw err;
-  });
-}
-
-ship.findOneAndRemove({ IMO: IMO }, function(err) {
-  if (err) throw err;
-  course.findAndRemove({ shipIMO: shipIMO }, function(err) {
-    if (err) throw err;
-  });
-  // we have deleted the ship
-  console.log('Ship deleted!');
-});
