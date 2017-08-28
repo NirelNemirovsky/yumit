@@ -1,0 +1,13 @@
+POST http://www.equasis.org/EquasisWeb/authen/HomePage?fs=HomePage HTTP/1.1
+cache-control: no-cache
+Postman-Token: 801d6a36-b16d-4986-8663-9d7492eca0a7
+Content-Type: application/x-www-form-urlencoded
+User-Agent: PostmanRuntime/6.2.5
+Accept: */*
+Host: www.equasis.org
+cookie: JSESSIONID=154FE18B4FB684260ECA9FD2AE12D691
+accept-encoding: gzip, deflate
+content-length: 63
+Connection: keep-alive
+
+j_email=eran.gil2%40gmail.com&j_password=123456&submit=Login

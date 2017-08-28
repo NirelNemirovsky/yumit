@@ -1,0 +1,13 @@
+POST http://www.equasis.org/EquasisWeb/restricted/Search?fs=search HTTP/1.1
+cache-control: no-cache
+Postman-Token: 827c89fd-a439-42ad-a082-c0aa88f9af4f
+Content-Type: application/x-www-form-urlencoded
+User-Agent: PostmanRuntime/6.2.5
+Accept: */*
+Host: www.equasis.org
+cookie: JSESSIONID=FE4BFF3FE54C9DBC221841BF6DF86D6D
+accept-encoding: gzip, deflate
+content-length: 140
+Connection: keep-alive
+
+P_PAGE=1&P_PAGE_COMP=1&P_PAGE_SHIP=1&ongletActifSC=ship&P_ENTREE_HOME_HIDDEN=9584499&P_ENTREE=9584499&Submit=Search&checkbox-shipSearch=Ship
