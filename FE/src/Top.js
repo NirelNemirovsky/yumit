@@ -4,10 +4,10 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import ReportStepper from './Components/ReportStepper';
 import Tabs from './Components/Tabs';
 
-const App = () => (
+const Top = () => (
   <MuiThemeProvider>
-    <Tabs />
+
   </MuiThemeProvider>
 );
 
-export default App;
+export default Top;
