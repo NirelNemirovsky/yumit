@@ -6,6 +6,7 @@ import {
 } from 'material-ui/Stepper';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
+import DistanceSlider from './DistanceSlider';
 
 class ReportStepper extends React.Component {
 
@@ -32,9 +33,9 @@ class ReportStepper extends React.Component {
   getStepContent(stepIndex) {
     switch (stepIndex) {
       case 0:
-        return ;
+        return <DistanceSlider/>;
       case 1:
-        return 'What is an ad group anyways?';
+        return <DistanceSlider/>;
       case 2:
         return 'This is the bit I really care about!';
       default:
