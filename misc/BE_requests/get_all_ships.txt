@@ -1,0 +1,10 @@
+GET https://www.vesselfinder.com/vesselsonmap?bbox=26.184621176931643%2C30.749866733454894%2C41.20293172380664%2C37.821505474754034&zoom=7&pv=6 HTTP/1.1
+cache-control: no-cache
+Postman-Token: 47b8e2a3-3ab3-4061-9754-19f1bfabb276
+Connection: keep-alive
+X-Requested-With: XMLHttpRequest
+User-Agent: PostmanRuntime/6.2.5
+Accept: */*
+Host: www.vesselfinder.com
+cookie: PHPSESSID=b898304e864bfedfa09a4c1f86b872c5
+accept-encoding: gzip, deflate
