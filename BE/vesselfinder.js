@@ -124,4 +124,4 @@ function vf_get_all_imos_by_distance(distance, callback){
     });
 }
 
-vf_get_all_imos_by_distance(0, console.log)
+vf_get_all_imos_by_distance(10, console.log)
