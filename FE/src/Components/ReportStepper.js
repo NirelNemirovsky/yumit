@@ -55,7 +55,7 @@ class ReportStepper extends React.Component {
             <StepLabel>בחר מרחק מהחוף</StepLabel>
           </Step>
           <Step>
-            <StepLabel>הכנס מדינות אויב</StepLabel>
+            <StepLabel>הכנס מדינות</StepLabel>
           </Step>
           <Step>
             <StepLabel>דרכי התקשרות</StepLabel>
