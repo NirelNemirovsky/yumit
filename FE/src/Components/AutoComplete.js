@@ -1,6 +1,7 @@
 import React from 'react';
 import Autosuggest from 'react-autosuggest';
 import './Autocomplete.css';
+import Chip from 'material-ui/Chip';
 
 // Imagine you have a list of languages that you'd like to autosuggest.
 const countries = [
@@ -247,7 +248,7 @@ const countries = [
 {"name": "Western Sahara", "code": "EH"},
 {"name": "Yemen", "code": "YE"},
 {"name": "Zambia", "code": "ZM"},
-{"name": "Zimbabwe", "code": "ZW"} 
+{"name": "Zimbabwe", "code": "ZW"}
 ];
 
 // Teach Autosuggest how to calculate suggestions for any given input value.
@@ -258,6 +259,16 @@ const getSuggestions = value => {
   return inputLength === 0 ? [] : countries.filter(lang =>
     lang.name.toLowerCase().slice(0, inputLength) === inputValue
   );
+};
+
+const styles = {
+  chip: {
+    margin: 4,
+  },
+  wrapper: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
 };
 
 // When suggestion is clicked, Autosuggest needs to populate the input
@@ -283,14 +294,37 @@ class AutoComplete extends React.Component {
     // and they are initially empty because the Autosuggest is closed.
     this.state = {
       value: '',
-      suggestions: []
+      suggestions: [],
+      chips: [],
     };
   }
+
+  onRequestDelete = () => {
+    alert('deleted');
+  };
+
+  handleRequestDelete = () => {
+    alert('deleted');
+  };
 
   onChange = (event, { newValue }) => {
     this.setState({
       value: newValue
     });
+
+    let newChips = this.state.chips;
+    newChips.push(
+      <Chip
+        onRequestDelete={this.handleRequestDelete}
+        onClick={this.handleTouchTap}
+        style={styles.chip}
+      >
+        newValue
+      </Chip>
+    );
+
+    this.setState({chips: newChips});
+
   };
 
   // Autosuggest will call this function every time you need to update suggestions.
