@@ -183,8 +183,8 @@ console.log('want to be a king');
             dest: shipObj['dest'],
             timestamp: shipObj['timestamp'],
             etastamp: shipObj['etastamp'],
-            ship_course: shipObj['ship_course'],
-            ship_speed: shipObj['ship_speed']
+            shipCourse: shipObj['ship_course'],
+            shipSpeed: shipObj['ship_speed']
         });
 
         request.post({
