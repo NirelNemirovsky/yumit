@@ -142,17 +142,35 @@ module.exports = {
 
     //get ship by IMO
     getShip: function(IMO) {
-        shipModel.findOne({
-            IMO: IMO
-        });
+      request.get(
+        url: 'http://localhost:64695/api/mongo/getDocuments=' + IMO,
+        form: { collectionName: "Ships" }
+        function (error, response, body) {
+          if (!error && response != null && response.statusCode == 200) {
+            return response;
+          } else {
+            console.error('Error!');
+            console.error(error);
+          }
+        }
+      );
     },
 
     //get course by shipIMO
     getCourses: function(shipIMO) {
-        courseModel.all({
-            shipIMO: shipIMO
-        });
-    },
+        request.get(
+          url: 'http://localhost:64695/api/mongo/getDocuments=' + shipIMO,
+          form: { collectionName: "Courses" }
+          function (error, response, body) {
+            if (!error && response != null && response.statusCode == 200) {
+              return response;
+            } else {
+              console.error('Error!');
+              console.error(error);
+            }
+          }
+        );
+      },
 
     // save the ship
     insert: function(shipObj) {
