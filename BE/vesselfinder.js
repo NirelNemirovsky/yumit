@@ -1,5 +1,5 @@
 var request = require('request');
- var dbfunc = require('./DBFunctions.js');
+ // var dbfunc = require('./DBFunctions.js');
 var sleep = require('system-sleep')
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
@@ -193,6 +193,7 @@ function eq_get_flag(imo, obj, callback){
                 try {
                     const dom = new JSDOM(body);
                     var country = dom.window.document.getElementById('resultShip').getElementsByTagName('tbody')[0].getElementsByTagName('td')[4].innerHTML.trim().replace(/\s+/gi, ' ');
+                    country = country.substring(0, country.indexOf('('));
                     obj['country'] = country;
                     delete obj['t'];
                     delete obj['sar'];
@@ -213,12 +214,19 @@ function eq_get_flag(imo, obj, callback){
     );
 }
 
-dbfunc.Connect();
-eq_login(function() {
-    vf_get_all_ships_by_distance(0, function (ship) {
-        console.log(ship);
-        dbfunc.insert(ship);
-    });
-});
+module.exports = {
+    get_ships: function (distance, callback){
+        eq_login(function() {
+            vf_get_all_ships_by_distance(distance, function (ship) {
+                // console.log(ship);
+                // dbfunc.insert(ship);
+                callback(ship);
+            });
+        });
+    }
+};
+
+// dbfunc.Connect();
+
 
 // while(eq_ssid == null);

@@ -3,12 +3,15 @@ var vesselfinder = require('./vesselfinder.js')
 var cron = require('node-cron');
 
 function subscribe_to_get_ships(phoneNumber, distance, countries) {
+    console.log('Subscribing:', phoneNumber, distance, countries);
     smsService.AddPhoneNumToAlert(phoneNumber);
     cron.schedule('* * * * *', function() {
         vesselfinder.get_ships(distance, function(ship) {
             for (var i=0; i<countries.length; i++){
-                if (countries[i] == ship['country'])
+                if (countries[i] == ship['country']){
+                    console.log('Sending message to ' + phoneNumber);
                     smsService.SendMessage(ship);
+                }
             }
         });
     });
@@ -21,7 +24,8 @@ const hostname = '127.0.0.1';
 const port = 3456;
 
 const server = http.createServer((req, res) => {
-    if (request.method == 'POST') {
+    console.log(req);
+    if (req.method == 'POST') {
         var body = "";
         req.on('data', function(chunk) {
             body += chunk;
