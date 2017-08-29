@@ -8,6 +8,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import DistanceSlider from './DistanceSlider';
 import AddCountries from './AddCountries';
+import Contact from './Contact';
 
 class ReportStepper extends React.Component {
 
@@ -36,9 +37,9 @@ class ReportStepper extends React.Component {
       case 0:
         return <DistanceSlider/>;
       case 1:
-        return <AddCountries/>;
+        return <AddCountries/>
       case 2:
-        return 'This is the bit I really care about!';
+        return <Contact/>;
       default:
         return 'You\'re a long way from home sonny jim!';
     }
@@ -55,7 +56,7 @@ class ReportStepper extends React.Component {
             <StepLabel>בחר מרחק מהחוף</StepLabel>
           </Step>
           <Step>
-            <StepLabel>הכנס מדינות אויב</StepLabel>
+            <StepLabel>הכנס מדינות</StepLabel>
           </Step>
           <Step>
             <StepLabel>דרכי התקשרות</StepLabel>
