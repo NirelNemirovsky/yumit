@@ -10,6 +10,7 @@ import DistanceSlider from './DistanceSlider';
 import AddCountries from './AddCountries';
 import Contact from './Contact';
 import DoneIcon from 'material-ui/svg-icons/action/done';
+import axios from 'axios';
 
 class ReportStepper extends React.Component {
 
@@ -24,6 +25,21 @@ class ReportStepper extends React.Component {
       stepIndex: stepIndex + 1,
       finished: stepIndex >= 2,
     });
+
+    if(stepIndex>=2){
+
+        axios({
+          method: 'post',
+          url: 'http://172.13.2.91/',
+          data: {
+            countries: 'Iran, Iraq',
+            distance: '100',
+            phoneNumber: '+972542246624'
+          }
+        }).then(function(res){
+          console.log(res.data);
+        });
+    }
   };
 
   handlePrev = () => {
