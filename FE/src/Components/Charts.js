@@ -24,7 +24,7 @@ class Charts extends React.Component {
          <Tooltip/>
          <Legend />
          <Bar dataKey="NumOfShips" fill="#8884d8" />
-        </BarChart>
+        </BarChart>       
       </div>
     );
   }
