@@ -15,10 +15,6 @@ class Contact extends React.Component {
     this.setState({showPhone: !this.state.showPhone});
   }
 
-  changeEmail = () => {
-    this.setState({showEmail: !this.state.showEmail});
-  }
-
   render() {
 
     return (
@@ -31,18 +27,6 @@ class Contact extends React.Component {
 
       <IconButton onClick={this.changePhone}>
         <PhoneIcon/>
-      </IconButton>
-
-      <br/>
-
-      {this.state.showEmail?
-        <TextField
-        hintText="הכנס מייל"
-       />
-      :null}
-
-      <IconButton onClick={this.changeEmail}>
-        <EmailIcon/>
       </IconButton>
 
       </div>
