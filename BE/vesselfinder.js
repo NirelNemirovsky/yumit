@@ -1,6 +1,13 @@
 var request = require('request');
+var dbfunc = require('./DBFunctions.js');
+var sleep = require('system-sleep')
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
+
 var rosh_hanikra = [33.094099, 35.103982];
 var gaza = [31.323499, 34.218753];
+
+var eq_ssid = null;
 
 function add_d_nmiles_to_lat(d, lat) {
     // 1 lat_degree = 110.574 km = 59.70518359 nm
@@ -43,7 +50,7 @@ function vf_init(){
 }
 
 function vf_get_all_ships(distance, callback){
-    console.log('Finding ships in '+calculate_square_str(distance).replace(/%2C/gi, " "));
+    // console.log('Finding ships in '+calculate_square_str(distance).replace(/%2C/gi, " "));
     request.get(
         'https://www.vesselfinder.com/vesselsonmap?bbox='+ calculate_square_str(distance) +'&zoom=7&pv=6',
         {
@@ -75,6 +82,7 @@ function vf_get_all_ships(distance, callback){
 }
 
 function vf_find_ship(mmsi, callback){
+    sleep(Math.floor(Math.random() * 20) * 1000);
     // https://www.vesselfinder.com/clickinfo?mmsi=667001498
     request.get(
         'https://www.vesselfinder.com/clickinfo?mmsi='+mmsi,
@@ -96,18 +104,10 @@ function vf_find_ship(mmsi, callback){
     );
 }
 
-function wait(ms){
-   var start = new Date().getTime();
-   var end = start;
-   while(end < start + ms) {
-     end = new Date().getTime();
-  }
-}
-
 /*
  The callback is performed on every IMO separately!
 */
-function vf_get_all_imos_by_distance(distance, callback){
+function vf_get_all_ships_by_distance(distance, callback){
     vf_init();
     vf_get_all_ships(distance, function(mmsi_array){
         for (var i=0; i<mmsi_array.length; i++){
@@ -117,11 +117,94 @@ function vf_get_all_imos_by_distance(distance, callback){
                     // vessel doesn't have imo
                 } else {
                     // vessel has imo, do something
-                    callback(obj.imo)
+                    eq_get_flag(obj.imo, obj, callback);
                 }
             });
         }
     });
 }
 
-vf_get_all_imos_by_distance(0, console.log)
+function eq_login(callback){
+    request.post(
+        'http://www.equasis.org/EquasisWeb/authen/HomePage?fs=HomePage',
+        {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.101 Safari/537.36'
+            },
+            form: {
+                j_email: 'eran.gil2@gmail.com',
+                j_password: '1234567',
+                submit: 'Login'
+              }
+        },
+        function (error, response, body) {
+            if (!error && response != null && response.statusCode == 200) {
+                // console.log('VesselFinder: Initializing... Done!');
+                var cookies = response.headers['set-cookie'][0];
+                var tmp_ssid = cookies.substring(cookies.indexOf('JSESSIONID=') + 'JSESSIONID='.length);
+                tmp_ssid = tmp_ssid.substring(0,tmp_ssid.indexOf(';'));
+                // console.log(ssid)
+                eq_ssid = tmp_ssid;
+                // console.log(body);
+                callback();
+            } else {
+                console.error('VesselFinder: Initializing... Error ');
+                console.error(error);
+            }
+        }
+    );
+}
+
+function eq_get_flag(imo, obj, callback){
+    request.post(
+        'http://www.equasis.org/EquasisWeb/restricted/Search?fs=search',
+        {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.101 Safari/537.36',
+                'Cookie': 'JSESSIONID='+eq_ssid
+            },
+            form: {
+                // P_PAGE=1&P_PAGE_COMP=1&P_PAGE_SHIP=1&P_ENTREE_HOME=9561863&P_ENTREE_HOME_HIDDEN=9561863&checkbox-ship=Ship&advancedSearch=
+                P_PAGE: '1',
+                P_PAGE_COMP: '1',
+                P_PAGE_SHIP: '1',
+                P_ENTREE_HOME: ''+imo,
+                P_ENTREE_HOME_HIDDEN: ''+imo,
+                // 'checkbox-ship': 'Ship',
+                advancedSearch: ''
+              }
+        },
+        function (error, response, body) {
+            if (!error && response != null && response.statusCode == 200) {
+                // console.log('VesselFinder: Search... Done!');
+                try {
+                    const dom = new JSDOM(body);
+                    var country = dom.window.document.getElementById('resultShip').getElementsByTagName('tbody')[0].getElementsByTagName('td')[4].innerHTML.trim().replace(/\s+/gi, ' ');
+                    obj['country'] = country;
+                    delete obj['t'];
+                    delete obj['sar'];
+                    delete obj['__id'];
+                    delete obj['pn'];
+                    delete obj['vo'];
+                    delete obj['ff'];
+                    delete obj['direct_link'];
+                    delete obj['draught'];
+                    delete obj['dw'];
+                    callback(obj);
+                } catch(err) {}
+            } else {
+                console.error('VesselFinder: Search... Error ');
+                console.error(error);
+            }
+        }
+    );
+}
+
+eq_login(function() {
+    vf_get_all_ships_by_distance(100, function (ship) {
+        console.log(ship);
+        dbfunc.insert(ship);
+    });
+});
+
+// while(eq_ssid == null);
