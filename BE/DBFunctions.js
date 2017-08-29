@@ -143,7 +143,7 @@ module.exports = {
     //get ship by IMO
     getShips: function(IMO) {
       request.get({
-	  url: 'http://localhost:64695/api/mongo/GetDocuments?collectionName=Ships&key=' + IMO},
+	  url: 'http://localhost:64695/api/mongo/GetDocuments?collectionName=Ships&key=' + IMO },
         function (error, response, body) {
           if (!error && response != null && response.statusCode == 200) {
             return response;
@@ -158,7 +158,7 @@ module.exports = {
     //get course by shipIMO
     getCourses: function(IMO) {
         request.get({
-        url: 'http://localhost:64695/api/mongo/GetDocuments?collectionName=Courses&key=' + IMO},
+        url: 'http://localhost:64695/api/mongo/GetDocuments?collectionName=Courses&key=' + IMO },
           function (error, response, body) {
             if (!error && response != null && response.statusCode == 200) {
               return response;
@@ -169,6 +169,21 @@ module.exports = {
           }
         );
       },
+
+      //get course by shipIMO
+      getAllShips: function() {
+          request.get({
+          url: 'http://localhost:64695/api/mongo/GetDocuments?collectionName=Ship' },
+            function (error, response, body) {
+              if (!error && response != null && response.statusCode == 200) {
+                return response;
+              } else {
+                console.error('Error!');
+                console.error(error);
+              }
+            }
+          );
+        },
 
     // save the ship
     insert: function(shipObj) {
@@ -181,7 +196,6 @@ module.exports = {
             gt: shipObj['gt'],
             country: shipObj['country']
         });
-console.log('want to be a king');
 	request.post({url: 'http://localhost:64695/api/mongo/insertShip',
 	json: { collectionName: "Ships", document: ship}},
     			function (error, response, body) {
