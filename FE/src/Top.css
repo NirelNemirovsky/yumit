@@ -4,9 +4,9 @@
     min-height: 220px;
     min-width: 310px;
     align-self: center;
-    background: #c2e59c;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #64b3f4, #c2e59c);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #64b3f4, #c2e59c); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: #c2e59c;
+    background: -webkit-radial-gradient(center, ellipse cover,  #D8E1E6 0%, #64b3f4 100%);
+    background: radial-gradient(ellipse at center,  #D8E1E6 0%, #64b3f4 100%);
 }
 
 .Center-Ship {
@@ -18,8 +18,9 @@
   border-bottom-style: double;
   border-bottom-color: #444;
 }
+
 .Top-Ship {
-  animation: Top-logo-spin infinite 15s linear;
+  animation: Top-logo-spin infinite 4s linear;
   height: 75px;
   margin-left: auto;
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import ReportStepper from './ReportStepper';
+import Charts from './Charts';
 
 const styles = {
   headline: {
@@ -39,7 +40,8 @@ export default class TabsExampleControlled extends React.Component {
         </Tab>
         <Tab label="סטטיסטיקות למחקר" value="b">
           <div>
-            <h2 style={styles.headline}>Coming soon :)</h2>            
+            <h2 style={styles.headline}>Coming soon :)</h2>
+            <Charts />
           </div>
         </Tab>
       </Tabs>
