@@ -1,4 +1,3 @@
-
 'use strict';
 
 const mongoose = require('mongoose');
@@ -8,13 +7,29 @@ const uri = 'mongodb:://Yumit:yumit@ds161793.mlab.com:61793/yumit';
 const Schema = mongoose.Schema;
 
 const ShipSchema = new Schema({
-  IMO: { type : String, default : '' },
-  name: { type : String, default : '' },
-  type: { type : Number },
-  year: { type : Number },
-  sizes: { type: String },
-  gt:    {type : Number},
-  country: { type: String},
+    IMO: {
+        type: String,
+        default: ''
+    },
+    name: {
+        type: String,
+        default: ''
+    },
+    type: {
+        type: Number
+    },
+    year: {
+        type: Number
+    },
+    sizes: {
+        type: String
+    },
+    gt: {
+        type: Number
+    },
+    country: {
+        type: String
+    },
 });
 
 /* json
@@ -35,110 +50,153 @@ const ShipSchema = new Schema({
 */
 
 const CourseSchema = new Schema({
-  shipIMO:  { type : String, default : ''},
-  dest: { type : String, default : '' },
-  timestamp: { type : Date, default : Date.now },
-  etastamp: { type : Date, default : Date.now },
-  ship_course: { type : Number },
-  ship_speed: { type : Number }
+    shipIMO: {
+        type: String,
+        default: ''
+    },
+    dest: {
+        type: String,
+        default: ''
+    },
+    timestamp: {
+        type: Date,
+        default: Date.now
+    },
+    etastamp: {
+        type: Date,
+        default: Date.now
+    },
+    ship_course: {
+        type: Number
+    },
+    ship_speed: {
+        type: Number
+    }
 });
 
 const CellsSchema = new Schema({
-  owner: { type: String }
+    owner: {
+        type: String
+    }
 })
 
 var shipModel = mongoose.model("shipModel", ShipSchema);
 var courseModel = mongoose.model("courseModel", CourseSchema);
+//
+// // grab the ship model
+// var Ship = require('./app/models/ship');
+// // grab the course model
+// var Course = require('./app/models/course');
+//
+// ShipSchema.path('IMO').required(true, 'IMO cannot be blank');
+// ShipSchema.path('MMSI').required(true, 'MMSI cannot be blank');
+// CourseSchema.path('shipIMO').required(true, 'shipIMO cannot be blank');
 
-// grab the ship model
-var Ship = require('./app/models/ship');
-// grab the course model
-var Course = require('./app/models/course');
+ShipSchema.pre('save', function(next) {
+    // get the current date
+    var currentDate = new Date();
 
-ShipSchema.path('IMO').required(true, 'IMO cannot be blank');
-ShipSchema.path('MMSI').required(true, 'MMSI cannot be blank');
-CourseSchema.path('shipIMO').required(true, 'shipIMO cannot be blank');
+    // change the updated_at field to current date
+    this.updated_at = currentDate;
 
-shipSchema.pre('save', function(next) {
-  // get the current date
-  var currentDate = new Date();
+    // if created_at doesn't exist, add to that field
+    if (!this.created_at)
+        this.created_at = currentDate;
 
-  // change the updated_at field to current date
-  this.updated_at = currentDate;
-
-  // if created_at doesn't exist, add to that field
-  if (!this.created_at)
-  this.created_at = currentDate;
-
-  next();
+    next();
 });
 
-courseSchema.pre('save', function(next) {
-  // get the current date
-  var currentDate = new Date();
+CourseSchema.pre('save', function(next) {
+    // get the current date
+    var currentDate = new Date();
 
-  // change the updated_at field to current date
-  this.updated_at = currentDate;
+    // change the updated_at field to current date
+    this.updated_at = currentDate;
 
-  // if created_at doesn't exist, add to that field
-  if (!this.created_at)
-  this.created_at = currentDate;
+    // if created_at doesn't exist, add to that field
+    if (!this.created_at)
+        this.created_at = currentDate;
 
-  next();
+    next();
 });
 
 module.exports = {
     //connect to the db
-    function Connect() {
-      mongoose.connect(uri);
-    }
+    Connect: function() {
+        mongoose.connect(uri);
+    },
 
     //close connection
-    function close() {
-      mongoose.close();
-    }
+    close: function() {
+        mongoose.close();
+    },
 
     //get ship by IMO
-    function getShip(IMO) {
-      shipModel.findOne( { IMO: IMO } );
-    }
+    getShip: function(IMO) {
+        shipModel.findOne({
+            IMO: IMO
+        });
+    },
 
     //get course by shipIMO
-    function getCourses(shipIMO) {
-      courseModel.all( { shipIMO: shipIMO } );
-    }
+    getCourses: function(shipIMO) {
+        courseModel.all({
+            shipIMO: shipIMO
+        });
+    },
 
     // save the ship
-    function insert(ship) {
-      var shipObj = JSON.parse(ship);
-      var ship = new shipModel({ IMO : shipObj.imo, name : shipObj.name, type : shipObj.type,
-        year : shipObj.year, sizes : shipObj.sizes, gt : shipObj.gt, country : shipObj.country});
-      ship.save(function(err) {
-        if (err) throw err;
-      });
-      var course = new courseModel( { shipIMO : shipObj.imo, dest : shipObj.dest,
-        timestamp :shipObj.timestamp, etastamp : shipObj.etastamp, ship_course : shipObj.ship_course,
-        ship_speed : shipObj.ship_speed });
-        course.save(function(err) {
-          if (err) throw err;
+    insert: function(ship) {
+        var shipObj = JSON.parse(ship);
+        var ship = new shipModel({
+            IMO: shipObj.imo,
+            name: shipObj.name,
+            type: shipObj.type,
+            year: shipObj.year,
+            sizes: shipObj.sizes,
+            gt: shipObj.gt,
+            country: shipObj.country
         });
-    };
+        ship.save(function(err) {
+            if (err) throw err;
+        });
+        var course = new courseModel({
+            shipIMO: shipObj.imo,
+            dest: shipObj.dest,
+            timestamp: shipObj.timestamp,
+            etastamp: shipObj.etastamp,
+            ship_course: shipObj.ship_course,
+            ship_speed: shipObj.ship_speed
+        });
+        course.save(function(err) {
+            if (err) throw err;
+        });
+    },
 
-    function coursesBetween(IMO, date1, date2) {
-      Ship.find({ IMO: IMO }).find(createdAt: {
-        $gte: date1,
-        $lt: date2
-      }).exec(function(err, users) {
-        if (err) throw err;
-      });
+    // coursesBetween: function(IMO, date1, date2) {
+    //     Ship.find({
+    //         IMO: IMO
+    //     }).find(createdAt: {
+    //         $gte: date1,
+    //         $lt: date2
+    //     }).exec(function(err, users) {
+    //         if (err) throw err;
+    //     });
+    // },
+
+    delete: function(IMO) {
+        ship.findOneAndRemove({
+            IMO: IMO
+        }, function(err) {
+            if (err) throw err;
+            course.findAndRemove({
+                shipIMO: shipIMO
+            }, function(err) {
+                if (err) throw err;
+            });
+            // we have deleted the ship
+            console.log('Ship deleted!');
+        });
     }
 
-    ship.findOneAndRemove({ IMO: IMO }, function(err) {
-      if (err) throw err;
-      course.findAndRemove({ shipIMO: shipIMO }, function(err) {
-        if (err) throw err;
-      });
-      // we have deleted the ship
-      console.log('Ship deleted!');
-    });
 };
