@@ -18,14 +18,31 @@ namespace Yumit.WebApi.Controllers
         }
 
         [HttpPost]
-        public IHttpActionResult InsertDocument([FromBody] MongoInsertRequest request)
+        public IHttpActionResult InsertShip([FromBody] MongoInsertRequest<ShipDocument> request)
         {
-            var collection = Db.GetCollection<object>(request.CollectionName);
-
+            var collection = Db.GetCollection<ShipDocument>(request.CollectionName);
             collection.BulkWrite(
-            new List<WriteModel<object>> { new InsertOneModel<object>(request.Document) });
-            Console.WriteLine();
+            new List<WriteModel<ShipDocument>> { new InsertOneModel<ShipDocument>(request.Document) });
             return Ok();
+        }
+
+        [HttpPost]
+        public IHttpActionResult InsertCourse([FromBody] MongoInsertRequest<CourseDocument> request)
+        {
+            var collection = Db.GetCollection<CourseDocument>(request.CollectionName);
+            collection.BulkWrite(
+                new List<WriteModel<CourseDocument>> { new InsertOneModel<CourseDocument>(request.Document) });
+            return Ok();
+        }
+
+        [HttpGet]
+        public IHttpActionResult GetDocuments(string collectionName, string key)
+        {
+            var collection = Db.GetCollection<object>(collectionName);
+            var builder = new FilterDefinitionBuilder<object>();
+            var result = collection.FindSync(builder.Eq("IMO", key));
+            var documents = result.ToList();
+            return Ok(documents);
         }
     }
 

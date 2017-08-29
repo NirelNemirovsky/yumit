@@ -1,5 +1,5 @@
 var request = require('request');
-// var dbfunc = require('./DBFunctions.js');
+ var dbfunc = require('./DBFunctions.js');
 var sleep = require('system-sleep')
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
