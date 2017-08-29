@@ -311,20 +311,6 @@ class AutoComplete extends React.Component {
     this.setState({
       value: newValue
     });
-
-    let newChips = this.state.chips;
-    newChips.push(
-      <Chip
-        onRequestDelete={this.handleRequestDelete}
-        onClick={this.handleTouchTap}
-        style={styles.chip}
-      >
-        newValue
-      </Chip>
-    );
-
-    this.setState({chips: newChips});
-
   };
 
   // Autosuggest will call this function every time you need to update suggestions.
@@ -354,14 +340,17 @@ class AutoComplete extends React.Component {
 
     // Finally, render it!
     return (
-      <Autosuggest
-        suggestions={suggestions}
-        onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-        onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-        getSuggestionValue={getSuggestionValue}
-        renderSuggestion={renderSuggestion}
-        inputProps={inputProps}
-      />
+      <div>
+        <Autosuggest
+          suggestions={suggestions}
+          onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+          onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+          getSuggestionValue={getSuggestionValue}
+          renderSuggestion={renderSuggestion}
+          inputProps={inputProps}
+        />
+          {this.state.chips}
+      </div>
     );
   }
 }
