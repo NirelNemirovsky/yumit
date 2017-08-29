@@ -31,20 +31,15 @@ export default class TabsExampleControlled extends React.Component {
       <Tabs
         value={this.state.value}
         onChange={this.handleChange}>
-        <Tab label="Tab A" value="a">
+        <Tab label="פרטי התראה" value="a">
           <div>
-            <h2 style={styles.headline}>Controllable Tab A</h2>
+            <h2 style={styles.headline}></h2>
             <ReportStepper />
           </div>
         </Tab>
-        <Tab label="Tab B" value="b">
+        <Tab label="סטטיסטיקות למחקר" value="b">
           <div>
-            <h2 style={styles.headline}>Controllable Tab B</h2>
-            <p>
-              This is another example of a controllable tab. Remember, if you
-              use controllable Tabs, you need to give all of your tabs values or else
-              you wont be able to select them.
-            </p>
+            <h2 style={styles.headline}>Coming soon :)</h2>            
           </div>
         </Tab>
       </Tabs>
