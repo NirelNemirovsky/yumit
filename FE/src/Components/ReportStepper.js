@@ -9,6 +9,7 @@ import FlatButton from 'material-ui/FlatButton';
 import DistanceSlider from './DistanceSlider';
 import AddCountries from './AddCountries';
 import Contact from './Contact';
+import DoneIcon from 'material-ui/svg-icons/action/done';
 
 class ReportStepper extends React.Component {
 
@@ -65,15 +66,7 @@ class ReportStepper extends React.Component {
         <div style={contentStyle}>
           {finished ? (
             <p>
-              <a
-                href="#"
-                onClick={(event) => {
-                  event.preventDefault();
-                  this.setState({stepIndex: 0, finished: false});
-                }}
-              >
-                Click here
-              </a> to reset the example.
+              <DoneIcon style={{'color':'#2196F3'}}/>
             </p>
           ) : (
             <div>

@@ -1,6 +1,5 @@
 import React from 'react';
 import PhoneIcon from 'material-ui/svg-icons/communication/phone';
-import EmailIcon from 'material-ui/svg-icons/communication/email';
 import IconButton from 'material-ui/IconButton';
 import TextField from 'material-ui/TextField';
 
