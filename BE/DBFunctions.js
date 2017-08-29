@@ -1,7 +1,17 @@
 'use strict';
 
 const mongoose = require('mongoose');
+const request = require('request');
+mongoose.Promise = global.Promise;
 
+
+var options = {
+  // db: { native_parser: true },
+  // server: { poolSize: 5 },
+  // replset: { rs_name: 'myReplicaSetName' },
+  user: 'Yumit',
+  pass: 'yumit'
+}
 const uri = 'mongodb:://Yumit:yumit@ds161793.mlab.com:61793/yumit';
 
 const Schema = mongoose.Schema;
@@ -9,14 +19,14 @@ const Schema = mongoose.Schema;
 const ShipSchema = new Schema({
     IMO: {
         type: String,
-        default: ''
+        required: true
     },
     name: {
         type: String,
-        default: ''
+        required: true
     },
     type: {
-        type: Number
+        type: String
     },
     year: {
         type: Number
@@ -52,19 +62,16 @@ const ShipSchema = new Schema({
 const CourseSchema = new Schema({
     shipIMO: {
         type: String,
-        default: ''
+        required: true
     },
     dest: {
-        type: String,
-        default: ''
+        type: String
     },
     timestamp: {
-        type: Date,
-        default: Date.now
+        type: String
     },
     etastamp: {
-        type: Date,
-        default: Date.now
+        type: String
     },
     ship_course: {
         type: Number
@@ -80,6 +87,7 @@ const CellsSchema = new Schema({
     }
 })
 
+var db;
 var shipModel = mongoose.model("shipModel", ShipSchema);
 var courseModel = mongoose.model("courseModel", CourseSchema);
 //
@@ -91,39 +99,40 @@ var courseModel = mongoose.model("courseModel", CourseSchema);
 // ShipSchema.path('IMO').required(true, 'IMO cannot be blank');
 // ShipSchema.path('MMSI').required(true, 'MMSI cannot be blank');
 // CourseSchema.path('shipIMO').required(true, 'shipIMO cannot be blank');
-
-ShipSchema.pre('save', function(next) {
-    // get the current date
-    var currentDate = new Date();
-
-    // change the updated_at field to current date
-    this.updated_at = currentDate;
-
-    // if created_at doesn't exist, add to that field
-    if (!this.created_at)
-        this.created_at = currentDate;
-
-    next();
-});
-
-CourseSchema.pre('save', function(next) {
-    // get the current date
-    var currentDate = new Date();
-
-    // change the updated_at field to current date
-    this.updated_at = currentDate;
-
-    // if created_at doesn't exist, add to that field
-    if (!this.created_at)
-        this.created_at = currentDate;
-
-    next();
-});
+//
+// ShipSchema.pre('save', function(next) {
+//     // get the current date
+//     var currentDate = new Date();
+//
+//     // change the updated_at field to current date
+//     this.updated_at = currentDate;
+//
+//     // if created_at doesn't exist, add to that field
+//     if (!this.created_at)
+//         this.created_at = currentDate;
+//
+//     next();
+// });
+//
+// CourseSchema.pre('save', function(next) {
+//     // get the current date
+//     var currentDate = new Date();
+//
+//     // change the updated_at field to current date
+//     this.updated_at = currentDate;
+//
+//     // if created_at doesn't exist, add to that field
+//     if (!this.created_at)
+//         this.created_at = currentDate;
+//
+//     next();
+// });
 
 module.exports = {
     //connect to the db
     Connect: function() {
-        mongoose.connect(uri);
+        mongoose.connect(uri, options);
+        db = mongoose.connection;
     },
 
     //close connection
@@ -146,43 +155,63 @@ module.exports = {
     },
 
     // save the ship
-    insert: function(ship) {
-        var shipObj = JSON.parse(ship);
+    insert: function(shipObj) {
         var ship = new shipModel({
-            IMO: shipObj.imo,
-            name: shipObj.name,
-            type: shipObj.type,
-            year: shipObj.year,
-            sizes: shipObj.sizes,
-            gt: shipObj.gt,
-            country: shipObj.country
+            IMO: shipObj['imo'],
+            name: shipObj['name'],
+            type: shipObj['type'],
+            year: shipObj['year'],
+            sizes: shipObj['sizes'],
+            gt: shipObj['gt'],
+            country: shipObj['country']
         });
-        ship.save(function(err) {
-            if (err) throw err;
-        });
+
+        request.post(
+    			url: 'http://localhost:64695/api/mongo/insertDocument',
+          body: { collectionName: "Ship", document: ship}
+    			function (error, response, body) {
+    				if (!error && response != null && response.statusCode == 200) {
+    					// here you do something with your result
+    				} else {
+    					console.error('Error!');
+    					console.error(error);
+    				}
+    			}
+    		);
+
         var course = new courseModel({
-            shipIMO: shipObj.imo,
-            dest: shipObj.dest,
-            timestamp: shipObj.timestamp,
-            etastamp: shipObj.etastamp,
-            ship_course: shipObj.ship_course,
-            ship_speed: shipObj.ship_speed
+            shipIMO: shipObj['imo'],
+            dest: shipObj['dest'],
+            timestamp: shipObj['timestamp'],
+            etastamp: shipObj['etastamp'],
+            ship_course: shipObj['ship_course'],
+            ship_speed: shipObj['ship_speed']
         });
-        course.save(function(err) {
+
+        request.post(
+    			url: 'http://localhost:64695/api/mongo/insertDocument',
+          form: { collectionName: "Course", document: course}
+    			function (error, response, body) {
+    				if (!error && response != null && response.statusCode == 200) {
+    					// here you do something with your result
+    				} else {
+    					console.error('Error!');
+    					console.error(error);
+    				}
+    			}
+    		);
+    },
+
+    coursesBetween: function(IMO, date1, date2) {
+        Ship.find({
+            IMO: IMO
+        }).find(createdAt: {
+            $gte: date1,
+            $lt: date2
+        }).exec(function(err, users) {
             if (err) throw err;
         });
     },
-
-    // coursesBetween: function(IMO, date1, date2) {
-    //     Ship.find({
-    //         IMO: IMO
-    //     }).find(createdAt: {
-    //         $gte: date1,
-    //         $lt: date2
-    //     }).exec(function(err, users) {
-    //         if (err) throw err;
-    //     });
-    // },
 
     delete: function(IMO) {
         ship.findOneAndRemove({
