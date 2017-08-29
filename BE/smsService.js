@@ -1,7 +1,7 @@
 var request = require('request')
 
 module.exports = {
-	AddPhoneNumToAlert = function (phoneNumber) {
+	AddPhoneNumToAlert: function (phoneNumber) {
 
 		// GOOD LUCK
 		var encodedPhoneNumber = encodeURIComponent(phoneNumber)
@@ -18,9 +18,9 @@ module.exports = {
 				}
 			}
 		);
-	}
+	},
 
-	RemovePhoneNumFromAlert = function (phoneNumber) {
+	RemovePhoneNumFromAlert: function (phoneNumber) {
 
 		// GOOD LUCK
 		var encodedPhoneNumber = encodeURIComponent(phoneNumber)
@@ -37,9 +37,9 @@ module.exports = {
 				}
 			}
 		);
-	}
+	},
 
-	SendMessage = function (message) {
+	SendMessage: function (message) {
 
 		// GOOD LUCK
 		var encodedMessage = encodeURIComponent(message)
