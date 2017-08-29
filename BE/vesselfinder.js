@@ -1,5 +1,5 @@
 var request = require('request');
-var dbfunc = require('./DBFunctions.js');
+// var dbfunc = require('./DBFunctions.js');
 var sleep = require('system-sleep')
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
@@ -82,7 +82,9 @@ function vf_get_all_ships(distance, callback){
 }
 
 function vf_find_ship(mmsi, callback){
-    sleep(Math.floor(Math.random() * 20) * 1000);
+    try{
+      sleep(Math.floor(Math.random() * 20) * 1000);
+    } catch(err){}
     // https://www.vesselfinder.com/clickinfo?mmsi=667001498
     request.get(
         'https://www.vesselfinder.com/clickinfo?mmsi='+mmsi,
@@ -200,8 +202,9 @@ function eq_get_flag(imo, obj, callback){
     );
 }
 
+dbfunc.Connect();
 eq_login(function() {
-    vf_get_all_ships_by_distance(100, function (ship) {
+    vf_get_all_ships_by_distance(0, function (ship) {
         console.log(ship);
         dbfunc.insert(ship);
     });
