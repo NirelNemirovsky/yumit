@@ -142,17 +142,35 @@ module.exports = {
 
     //get ship by IMO
     getShip: function(IMO) {
-        shipModel.findOne({
-            IMO: IMO
-        });
+      request.get(
+        url: 'http://localhost:64695/api/mongo/getDocuments=' + IMO,
+        form: { collectionName: "Ships" }
+        function (error, response, body) {
+          if (!error && response != null && response.statusCode == 200) {
+            return response;
+          } else {
+            console.error('Error!');
+            console.error(error);
+          }
+        }
+      );
     },
 
     //get course by shipIMO
     getCourses: function(shipIMO) {
-        courseModel.all({
-            shipIMO: shipIMO
-        });
-    },
+        request.get(
+          url: 'http://localhost:64695/api/mongo/getDocuments=' + shipIMO,
+          form: { collectionName: "Courses" }
+          function (error, response, body) {
+            if (!error && response != null && response.statusCode == 200) {
+              return response;
+            } else {
+              console.error('Error!');
+              console.error(error);
+            }
+          }
+        );
+      },
 
     // save the ship
     insert: function(shipObj) {
@@ -165,10 +183,9 @@ module.exports = {
             gt: shipObj['gt'],
             country: shipObj['country']
         });
-
-        request.post(
-    			url: 'http://localhost:64695/api/mongo/insertDocument',
-          body: { collectionName: "Ship", document: ship}
+console.log('want to be a king');
+	request.post({url: 'http://localhost:64695/api/mongo/insertShip',
+	json: { collectionName: "Ships", document: ship}},
     			function (error, response, body) {
     				if (!error && response != null && response.statusCode == 200) {
     					// here you do something with your result
@@ -177,20 +194,20 @@ module.exports = {
     					console.error(error);
     				}
     			}
-    		);
+	);
 
         var course = new courseModel({
             shipIMO: shipObj['imo'],
             dest: shipObj['dest'],
             timestamp: shipObj['timestamp'],
             etastamp: shipObj['etastamp'],
-            ship_course: shipObj['ship_course'],
-            ship_speed: shipObj['ship_speed']
+            shipCourse: shipObj['ship_course'],
+            shipSpeed: shipObj['ship_speed']
         });
 
-        request.post(
-    			url: 'http://localhost:64695/api/mongo/insertDocument',
-          form: { collectionName: "Course", document: course}
+        request.post({
+    			url: 'http://localhost:64695/api/mongo/insertCourse',
+		json: { collectionName: "Courses", document: course}},
     			function (error, response, body) {
     				if (!error && response != null && response.statusCode == 200) {
     					// here you do something with your result
@@ -199,19 +216,19 @@ module.exports = {
     					console.error(error);
     				}
     			}
-    		);
+		);
     },
 
-    coursesBetween: function(IMO, date1, date2) {
-        Ship.find({
-            IMO: IMO
-        }).find(createdAt: {
-            $gte: date1,
-            $lt: date2
-        }).exec(function(err, users) {
-            if (err) throw err;
-        });
-    },
+    // coursesBetween: function(IMO, date1, date2) {
+        // Ship.find({
+            // IMO: IMO
+        // }).find(createdAt: {
+            // $gte: date1,
+            // $lt: date2
+        // }).exec(function(err, users) {
+            // if (err) throw err;
+        // });
+    // },
 
     delete: function(IMO) {
         ship.findOneAndRemove({
