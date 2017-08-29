@@ -141,10 +141,9 @@ module.exports = {
     },
 
     //get ship by IMO
-    getShip: function(IMO) {
-      request.get(
-        url: 'http://localhost:64695/api/mongo/getDocuments=' + IMO,
-        form: { collectionName: "Ships" }
+    getShips: function(IMO) {
+      request.get({
+	  url: 'http://localhost:64695/api/mongo/GetDocuments?collectionName=Ships&key=' + IMO},
         function (error, response, body) {
           if (!error && response != null && response.statusCode == 200) {
             return response;
@@ -157,10 +156,9 @@ module.exports = {
     },
 
     //get course by shipIMO
-    getCourses: function(shipIMO) {
-        request.get(
-          url: 'http://localhost:64695/api/mongo/getDocuments=' + shipIMO,
-          form: { collectionName: "Courses" }
+    getCourses: function(IMO) {
+        request.get({
+        url: 'http://localhost:64695/api/mongo/GetDocuments?collectionName=Courses&key=' + IMO},
           function (error, response, body) {
             if (!error && response != null && response.statusCode == 200) {
               return response;

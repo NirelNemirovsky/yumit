@@ -35,7 +35,7 @@ namespace Yumit.WebApi.Controllers
             return Ok();
         }
 
-        [HttpPost]
+        [HttpGet]
         public IHttpActionResult GetDocuments(string collectionName, string key)
         {
             var collection = Db.GetCollection<object>(collectionName);
