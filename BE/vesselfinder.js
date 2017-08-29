@@ -1,5 +1,5 @@
 var request = require('request');
-var dbfunc = require('./DBFunctions.js');
+// var dbfunc = require('./DBFunctions.js');
 var sleep = require('system-sleep')
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
@@ -29,7 +29,7 @@ function calculate_square_str(distance){
     return bottom + '%2C' + left + '%2C' + top + '%2C' + right;
 }
 
-function vf_init(){
+function vf_init(callback){
     request.get(
         'https://www.vesselfinder.com/',
         {
@@ -41,6 +41,14 @@ function vf_init(){
             if (!error && response != null && response.statusCode == 200) {
                 // console.log('VesselFinder: Initializing... Done!');
                 // console.log(body);
+                var cookies = response.headers['set-cookie'][0];
+                // console.log(cookies);
+                var tmp_ssid = cookies.substring(cookies.indexOf('PHPSESSID=') + 'PHPSESSID='.length);
+                tmp_ssid = tmp_ssid.substring(0,tmp_ssid.indexOf(';'));
+                // console.log(ssid)
+                vf_ssid = tmp_ssid;
+                // console.log(vf_ssid);
+                callback();
             } else {
                 console.error('VesselFinder: Initializing... Error ');
                 console.error(error);
@@ -56,7 +64,8 @@ function vf_get_all_ships(distance, callback){
         {
             headers: {
                 'User-Agent': 'PostmanRuntime/6.2.5',
-                'X-Requested-With': 'XMLHttpRequest'
+                'X-Requested-With': 'XMLHttpRequest',
+                'Cookie': 'PHPSESSID='+vf_ssid+';'
             }
         },
         function (error, response, body) {
@@ -82,14 +91,17 @@ function vf_get_all_ships(distance, callback){
 }
 
 function vf_find_ship(mmsi, callback){
-    sleep(Math.floor(Math.random() * 20) * 1000);
+    try{
+      sleep(Math.floor(Math.random() * 20) * 1000);
+    } catch(err){}
     // https://www.vesselfinder.com/clickinfo?mmsi=667001498
     request.get(
         'https://www.vesselfinder.com/clickinfo?mmsi='+mmsi,
         {
             headers: {
                 'User-Agent': 'PostmanRuntime/6.2.5',
-                'X-Requested-With': 'XMLHttpRequest'
+                'X-Requested-With': 'XMLHttpRequest',
+                'Cookie': 'PHPSESSID='+vf_ssid+';'
             }
         },
         function (error, response, body) {
@@ -108,19 +120,20 @@ function vf_find_ship(mmsi, callback){
  The callback is performed on every IMO separately!
 */
 function vf_get_all_ships_by_distance(distance, callback){
-    vf_init();
-    vf_get_all_ships(distance, function(mmsi_array){
-        for (var i=0; i<mmsi_array.length; i++){
-            vf_find_ship(mmsi_array[i], function(vessel) {
-                var obj = JSON.parse(vessel);
-                if (obj.imo == null || obj.imo == '') {
-                    // vessel doesn't have imo
-                } else {
-                    // vessel has imo, do something
-                    eq_get_flag(obj.imo, obj, callback);
-                }
-            });
-        }
+    vf_init(function(){
+        vf_get_all_ships(distance, function(mmsi_array){
+            for (var i=0; i<mmsi_array.length; i++){
+                vf_find_ship(mmsi_array[i], function(vessel) {
+                    var obj = JSON.parse(vessel);
+                    if (obj.imo == null || obj.imo == '') {
+                        // vessel doesn't have imo
+                    } else {
+                        // vessel has imo, do something
+                        eq_get_flag(obj.imo, obj, callback);
+                    }
+                });
+            }
+        });
     });
 }
 
@@ -200,8 +213,9 @@ function eq_get_flag(imo, obj, callback){
     );
 }
 
+dbfunc.Connect();
 eq_login(function() {
-    vf_get_all_ships_by_distance(100, function (ship) {
+    vf_get_all_ships_by_distance(0, function (ship) {
         console.log(ship);
         dbfunc.insert(ship);
     });
