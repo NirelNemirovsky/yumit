@@ -12,7 +12,7 @@ class AddCountries extends React.Component {
   render() {
 
     return (
-      <div style={{'text-align':'center'}}>
+      <div style={{'textAlign':'center'}}>
         <AutoComplete/>
       </div>
     );

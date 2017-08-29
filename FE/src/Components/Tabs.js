@@ -9,6 +9,9 @@ const styles = {
     paddingTop: 16,
     marginBottom: 12,
     fontWeight: 400,
+    textAlign:'center',
+    color:'#1565C0',
+    fontWeight: 'bold'
   },
 };
 
@@ -40,7 +43,7 @@ export default class TabsExampleControlled extends React.Component {
         </Tab>
         <Tab label="סטטיסטיקות למחקר" value="b">
           <div>
-            <h2 style={styles.headline}>Coming soon :)</h2>
+            <h2 style={styles.headline}>Coming next.. :)</h2>
             <Charts />
           </div>
         </Tab>

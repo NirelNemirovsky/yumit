@@ -16,7 +16,7 @@ class Charts extends React.Component {
   render () {
     return (
       <div>
-        <BarChart className="chart-center" width={600} height={300} data={data}
+        <BarChart className="chart-center" width={600} height={250} data={data}
               margin={{top: 5, right: 30, left: 20, bottom: 5}}>
          <XAxis dataKey="name"/>
          <YAxis/>
