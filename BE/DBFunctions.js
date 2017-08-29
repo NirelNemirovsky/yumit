@@ -166,7 +166,7 @@ module.exports = {
             country: shipObj['country']
         });
 console.log('want to be a king');
-	request.post({url: 'http://localhost:64695/api/mongo/insertDocument',
+	request.post({url: 'http://localhost:64695/api/mongo/insertShip',
 	json: { collectionName: "Ships", document: ship}},
     			function (error, response, body) {
     				if (!error && response != null && response.statusCode == 200) {
@@ -188,7 +188,7 @@ console.log('want to be a king');
         });
 
         request.post({
-    			url: 'http://localhost:64695/api/mongo/insertDocument',
+    			url: 'http://localhost:64695/api/mongo/insertCourse',
 		json: { collectionName: "Courses", document: course}},
     			function (error, response, body) {
     				if (!error && response != null && response.statusCode == 200) {
