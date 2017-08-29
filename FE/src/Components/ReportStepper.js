@@ -7,7 +7,7 @@ import {
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import DistanceSlider from './DistanceSlider';
-import AddCountries from './AddCountries';
+// import AddCountries from './AddCountries';
 
 class ReportStepper extends React.Component {
 
@@ -36,7 +36,7 @@ class ReportStepper extends React.Component {
       case 0:
         return <DistanceSlider/>;
       case 1:
-        return <AddCountries/>;
+        return 'יהיה פה מדינות'
       case 2:
         return 'This is the bit I really care about!';
       default:
