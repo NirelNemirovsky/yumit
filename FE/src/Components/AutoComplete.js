@@ -328,6 +328,20 @@ class AutoComplete extends React.Component {
     });
   };
 
+  setChip = (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) => {
+    let newChips = this.state.chips;
+    newChips.push(
+      <Chip
+
+        style={styles.chip}
+      >
+        {suggestionValue}
+      </Chip>
+    );
+
+    this.setState({chips: newChips});
+  }
+
   render() {
     const { value, suggestions } = this.state;
 
@@ -348,6 +362,7 @@ class AutoComplete extends React.Component {
           getSuggestionValue={getSuggestionValue}
           renderSuggestion={renderSuggestion}
           inputProps={inputProps}
+          onSuggestionSelected = {this.setChip}
         />
           {this.state.chips}
       </div>

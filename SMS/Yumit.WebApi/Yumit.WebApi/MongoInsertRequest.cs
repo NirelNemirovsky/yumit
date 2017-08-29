@@ -5,10 +5,10 @@ using System.Web;
 
 namespace Yumit.WebApi
 {
-    public class MongoInsertRequest
+    public class MongoInsertRequest<T>
     {
         public string CollectionName { get; set; }
 
-        public object Document { get; set; }
+        public T Document { get; set; }
     }
 }
