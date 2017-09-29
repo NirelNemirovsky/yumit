@@ -10,7 +10,8 @@
     "react-autosuggest": "^9.3.2",
     "react-dom": "^15.6.1",
     "react-scripts": "0.9.5",
-    "react-tap-event-plugin": "^2.0.1"
+    "react-tap-event-plugin": "^2.0.1",
+    "recharts": "^1.0.0-apha.5"
   },
   "devDependencies": {},
   "scripts": {
