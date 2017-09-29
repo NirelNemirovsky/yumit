@@ -1,20 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Web.Http;
 using MongoDB.Driver;
+using Yumit.WebApi.Mongo.Documents;
 
-namespace Yumit.WebApi.Controllers
+namespace Yumit.WebApi.Mongo
 {
     public class MongoController : ApiController
     {
-        private static readonly MongoClient Client;
         private static readonly IMongoDatabase Db;
         private const string ConnectionString = "mongodb://Yumit:yumit@ds161793.mlab.com:61793/yumit";
 
         static MongoController()
         {
-            Client = new MongoClient(ConnectionString);
-            Db = Client.GetDatabase("yumit");
+            var client = new MongoClient(ConnectionString);
+            Db = client.GetDatabase("yumit");
         }
 
         [HttpPost]
