@@ -177,7 +177,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Mongo\MongoInsertRequest.cs" />
+    <Compile Include="Mongo\Requests\MongoInsertRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Mongo\Documents\ShipDocument.cs" />
   </ItemGroup>

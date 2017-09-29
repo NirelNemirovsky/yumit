@@ -2,6 +2,7 @@
 using System.Web.Http;
 using MongoDB.Driver;
 using Yumit.WebApi.Mongo.Documents;
+using Yumit.WebApi.Mongo.Requests;
 
 namespace Yumit.WebApi.Mongo
 {
@@ -35,7 +36,7 @@ namespace Yumit.WebApi.Mongo
         }
 
         [HttpGet]
-        public IHttpActionResult GetDocuments(string collectionName, string key)
+        public IHttpActionResult GetDocumentsByKey(string collectionName, string key)
         {
             var collection = Db.GetCollection<object>(collectionName);
             var builder = new FilterDefinitionBuilder<object>();
@@ -45,7 +46,7 @@ namespace Yumit.WebApi.Mongo
         }
 
         [HttpGet]
-        public IHttpActionResult GetDocuments(string collectionName)
+        public IHttpActionResult GetAllDocuments(string collectionName)
         {
             var collection = Db.GetCollection<object>(collectionName);
             return Ok(collection);

@@ -1,4 +1,4 @@
-﻿namespace Yumit.WebApi.Mongo
+﻿namespace Yumit.WebApi.Mongo.Requests
 {
     public class MongoInsertRequest<T>
     {
