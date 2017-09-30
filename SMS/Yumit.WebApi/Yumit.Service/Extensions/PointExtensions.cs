@@ -8,10 +8,10 @@ namespace Yumit.Service.Extensions
         private const double MilesToLatitude = 59.70518359;
         private const double MilesToLongitude = 60.1079914;
 
-        public static void AddMiles(this Point point, double miles)
+        public static void AddMiles(this Point point, double miles, int multiplier = 1)
         {
-            point.AddMilesToLatitude(miles);
-            point.AddMilesToLongitude(miles);
+            point.AddMilesToLatitude(miles * multiplier);
+            point.AddMilesToLongitude(miles * multiplier);
             point.Latitude = point.Latitude + miles / MilesToLatitude;
         }
 
