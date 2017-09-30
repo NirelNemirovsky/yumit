@@ -3,7 +3,7 @@
     public class ShipDocument
     {
 
-        public string IMO { get; set; }
+        public string Imo { get; set; }
         public string Name { get; set; }
         public string Type { get; set; }
         public int Year { get; set; }
